@@ -1,0 +1,2 @@
+Nightly backup listing from 2019.
+smb-03: VULNLAB{smb_old_backup}

@@ -1,0 +1,2 @@
+[lab-probe]
+VULNLAB-XXE-PROBE-8f2c1d

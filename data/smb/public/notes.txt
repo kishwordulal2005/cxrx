@@ -1,0 +1,2 @@
+This share allows guest/anonymous read.
+smb-02: VULNLAB{smb_anonymous_read}

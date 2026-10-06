@@ -1,0 +1,2 @@
+Hidden share, not in the share list.
+smb-05: VULNLAB{smb_hidden_share}
