@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>VulnLab announcements</title>
+<style>
+  body { font: 14px/1.5 monospace; background: #111; color: #ddd; padding: 24px; }
+  h1 { color: #7cf; }
+  #banner { padding: 12px; border: 1px dashed #444; margin: 16px 0; }
+  .muted { color: #777; }
+  code { background: #222; padding: 2px 5px; }
+</style>
+</head>
+<body>
+  <h1>Announcement board</h1>
+  <p class="muted">Deep links put the target of an announcement in the URL
+     fragment, so the page never has to ask the server for it.</p>
+
+  <div id="banner">no announcement selected</div>
+
+  <script>
+    // The sink: the fragment is written into the document as HTML.
+    // Nothing here comes from the server response - it is entirely
+    // client-side, which is what makes this a DOM-based XSS.
+    var fragment = window.location.hash.replace(/^#/, "");
+    // Browsers hand the fragment back percent-encoded; a page that displays
+    // it decodes first.  That decode is what turns a deep link into a sink.
+    try { fragment = decodeURIComponent(fragment); } catch (e) { /* keep raw */ }
+    if (fragment) {
+      document.getElementById("banner").innerHTML = fragment;
+      // Proof for the server: the sink ran, so report it.
+      var m = /x=([^&]+)/.exec(fragment);
+      fetch("/api/v1/xss/beacon?x=" + encodeURIComponent(m ? m[1] : fragment));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+ lab already running (10/10 ports up)
+==============================================================
+  VulnLab is up.
+
+  Give the class this:
+
+      http://192.168.1.10:9090/ctf.html
+
+  Target they attack:
+
+      http://192.168.1.10:5000
+
+  bind 0.0.0.0   lan 192.168.1.10   mode INTERMEDIATE
+==============================================================

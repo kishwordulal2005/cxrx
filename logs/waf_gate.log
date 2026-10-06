@@ -1,0 +1,167 @@
+==============================================================
+  VulnLab WAF gate
+  AUTHORIZED LAB ONLY - the filter is broken on purpose
+  http://0.0.0.0:5050/
+==============================================================
+ * Serving Flask app 'waf_gate'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.9:5050
+Press CTRL+C to quit
+192.168.1.9 - - [05/Oct/2026 18:21:09] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:21:09] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:21:09] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:21:09] "POST /api/query HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:21:09] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:21:09] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:24:27] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:24:27] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:24:27] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:24:27] "POST /api/query HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:24:27] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.9 - - [05/Oct/2026 18:24:27] "GET /diag/ports HTTP/1.1" 200 -
+==============================================================
+  VulnLab WAF gate
+  AUTHORIZED LAB ONLY - the filter is broken on purpose
+  http://0.0.0.0:5050/
+==============================================================
+ * Serving Flask app 'waf_gate'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.10:5050
+Press CTRL+C to quit
+192.168.1.10 - - [06/Oct/2026 08:26:20] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:26:20] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:26:20] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:26:20] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:26:20] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:26:20] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:34:37] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:34:37] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:34:37] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:34:37] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:34:37] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:34:37] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:45:23] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:45:23] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:45:23] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:45:23] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:45:23] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 08:45:23] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:01:10] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:01:10] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:01:10] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:01:10] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:01:10] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:01:10] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:22:48] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:22:48] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:22:48] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:22:48] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:22:48] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:22:48] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:25:32] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:25:32] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:25:32] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:25:32] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:25:32] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:25:32] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:44:04] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:44:04] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:44:04] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:44:04] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:44:04] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 09:44:04] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 10:23:42] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 10:23:42] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 10:23:42] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 10:23:42] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 10:23:42] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 10:23:42] "GET /diag/ports HTTP/1.1" 200 -
+==============================================================
+  VulnLab WAF gate
+  AUTHORIZED LAB ONLY - the filter is broken on purpose
+  http://0.0.0.0:5050/
+==============================================================
+ * Serving Flask app 'waf_gate'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.10:5050
+Press CTRL+C to quit
+192.168.1.10 - - [06/Oct/2026 11:00:20] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:00:20] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:00:20] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:00:20] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:00:20] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:00:20] "GET /diag/ports HTTP/1.1" 200 -
+==============================================================
+  VulnLab WAF gate
+  AUTHORIZED LAB ONLY - the filter is broken on purpose
+  http://0.0.0.0:5050/
+==============================================================
+ * Serving Flask app 'waf_gate'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.10:5050
+Press CTRL+C to quit
+192.168.1.10 - - [06/Oct/2026 11:24:29] "GET / HTTP/1.0" 200 -
+==============================================================
+  VulnLab WAF gate
+  AUTHORIZED LAB ONLY - the filter is broken on purpose
+  http://0.0.0.0:5050/
+==============================================================
+ * Serving Flask app 'waf_gate'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.10:5050
+Press CTRL+C to quit
+192.168.1.10 - - [06/Oct/2026 11:25:12] "GET / HTTP/1.0" 200 -
+127.0.0.1 - - [06/Oct/2026 11:25:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [06/Oct/2026 11:25:33] "GET /login HTTP/1.1" 502 -
+127.0.0.1 - - [06/Oct/2026 11:25:43] "GET / HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:25:43] "GET / HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:26:15] "GET /login HTTP/1.1" 502 -
+192.168.1.10 - - [06/Oct/2026 11:26:15] "GET /ctf.html HTTP/1.1" 502 -
+192.168.1.10 - - [06/Oct/2026 11:26:15] "GET /login HTTP/1.0" 502 -
+==============================================================
+  VulnLab WAF gate
+  AUTHORIZED LAB ONLY - the filter is broken on purpose
+  http://0.0.0.0:5050/
+==============================================================
+ * Serving Flask app 'waf_gate'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5050
+ * Running on http://192.168.1.10:5050
+Press CTRL+C to quit
+192.168.1.10 - - [06/Oct/2026 11:28:03] "GET /login HTTP/1.0" 200 -
+192.168.1.10 - - [06/Oct/2026 11:28:52] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:28:52] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:28:52] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:28:52] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:28:52] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:28:52] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:33:48] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:33:48] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:33:48] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:33:48] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:33:48] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:33:48] "GET /diag/ports HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:37:26] "GET /login HTTP/1.0" 200 -
+192.168.1.10 - - [06/Oct/2026 11:39:12] "GET /admin/ HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:39:12] "GET /internal-panel HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:39:12] "POST /admin/action HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:39:12] "POST /api/query HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:39:12] "GET /download?file=%252e%252e%252fsecret%252fflag.txt HTTP/1.1" 200 -
+192.168.1.10 - - [06/Oct/2026 11:39:12] "GET /diag/ports HTTP/1.1" 200 -

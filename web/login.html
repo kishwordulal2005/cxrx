@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in - VulnLab Internal Portal</title>
+<link rel="stylesheet" href="/static/css/portal.css">
+</head>
+<body class="site">
+<div class="authwrap">
+  <div class="authcard">
+    <header>
+      <div class="mark-lg">V</div>
+      <h1>Sign in to VulnLab</h1>
+      <p class="muted small" style="margin:0">Staff intranet · IT Operations</p>
+    </header>
+    <div class="body">
+      <div class="field">
+        <label for="u">Username</label>
+        <input id="u" name="username" autocomplete="username" placeholder="first.last">
+      </div>
+      <div class="field">
+        <label for="p">Password</label>
+        <input id="p" name="password" type="password" autocomplete="current-password">
+      </div>
+      <button id="go">Sign in</button>
+      <div class="msg" id="msg"></div>
+      <p class="muted tiny" style="margin:20px 0 0;text-align:center;border-top:1px solid var(--border);padding-top:14px">
+        Session tokens are HS256 JWTs signed with the application secret.
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+document.getElementById('go').addEventListener('click', async () => {
+  const u = document.getElementById('u').value, p = document.getElementById('p').value;
+  const r = await fetch('/api/v1/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: u, password: p })
+  });
+  const d = await r.json();
+  if (d.token) {
+    localStorage.setItem('vulnlab_token', d.token);
+    document.getElementById('msg').style.color = '#3fb950';
+    document.getElementById('msg').textContent = 'signed in as ' + d.token.slice(0, 24) + '...';
+  } else {
+    document.getElementById('msg').textContent = d.error || 'login failed';
+  }
+});
+</script>
+</body>
+</html>

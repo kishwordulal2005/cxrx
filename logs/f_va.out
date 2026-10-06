@@ -1,0 +1,91 @@
+========================================================================
+ VulnLab verification
+========================================================================
+========================================================================
+ services listening
+========================================================================
+  PASS port 5000                        web
+  PASS port 5050                        waf
+  PASS port 9090                        ctf
+  PASS port 2121                        ftp
+  PASS port 2323                        telnet
+  PASS port 2222                        ssh
+  PASS port 4450                        smb
+  PASS port 8000                        debug-lab
+  PASS port 8081                        internals
+  PASS port 6379                        cache
+
+========================================================================
+ flag reachability  (each challenge is solvable as designed)
+========================================================================
+  PASS api-09                           status 200 got 'VULNLAB{trusting_the_claim}'
+  PASS api-14                           brute-forced in 6521 attempts
+  PASS flask-05                         511331-430
+
+========================================================================
+ request forgery, header abuse and injection
+========================================================================
+  PASS csrf-01 forged role change       200
+  PASS csrf-02 origin check bypass      200
+  PASS host-01 reset link poisoning     200
+  PASS host-02 forwarded host wins      200
+  PASS sqli-01 blind injection          X-Rows=10
+  PASS sqli-02 second order             200
+  PASS cmdi-01 command injection        200
+  FAIL xxe-01 external entity read      probe leaked
+  PASS race-01 token replay             200
+  PASS admin-01 spoofed client address  200
+
+========================================================================
+ cross-site scripting contexts
+========================================================================
+  PASS xss-01 stored payload rendered raw 200
+  PASS xss-02 DOM sink present          200
+  PASS xss-03 attribute breakout        X-Breakout=yes
+
+========================================================================
+ real browser execution
+========================================================================
+  PASS xss-02 payload executes in a real browser title='XSS-EXECUTED'
+  PASS xss-02 beacon reached the server {"beacon_received": true, "lab_flag": "VULNLAB{dom_sink_from_the_fragment}", "ma
+
+========================================================================
+ student portal: live feed and registration
+========================================================================
+  FAIL portal feed endpoint             0 rows
+  FAIL portal feed names challenge and points 
+  PASS portal first registration        200
+  PASS portal resume returns a usable token 200
+  PASS resumed token still resolves the player 200
+  PASS portal bot row exists to be hidden verifier_resume_254484
+  PASS portal control player registers  200
+  PASS leaderboard serves rows          200
+  PASS leaderboard shows real students  1 rows
+  PASS leaderboard ranks stay contiguous [1]
+
+========================================================================
+ portal entry points and recon value
+========================================================================
+  PASS portal /ctf.html redirects       302 -> http://192.168.1.10:9090/ctf.html
+  PASS portal /ctf redirects            302 -> http://192.168.1.10:9090/ctf.html
+  PASS portal page served on :9090      200
+  PASS api-docs still publishes endpoints 200
+
+========================================================================
+ scoreboard accepts every flag
+========================================================================
+  PASS register                         verifier_54484
+  PASS status reports challenges        123
+  PASS status shows services online     {'debug': True, 'ftp': True, 'rabbit1': True, 'rabbit2': True, 'smb': True, 'ssh': True, 'telnet': True, 'waf': True, 'web': True}
+  PASS leaderboard hides this verifier  verifier_54484
+  PASS player progress recorded         123 solved, score 18350
+  PASS root flag accepted               boot-02 in
+
+ teardown: removed flask-boss doors, uploads, 2 verifier player(s), planted cache:verify_all
+
+========================================================================
+ 127 passed, 3 failed
+  FAILED: xxe-01 external entity read
+  FAILED: portal feed endpoint
+  FAILED: portal feed names challenge and points
+========================================================================

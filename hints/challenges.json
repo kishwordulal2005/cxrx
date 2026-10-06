@@ -1,0 +1,1739 @@
+[
+  {
+    "id": "recon-01",
+    "name": "First Contact",
+    "category": "Recon",
+    "difficulty": "Easy",
+    "points": 50,
+    "cwe": "CWE-200",
+    "description": "Discover the target's exposed services and find the lab's first contact marker.",
+    "hints": [
+      "Scan the target and read full HTTP responses, not just bodies.",
+      "Some information lives in protocol metadata.",
+      "Look at HTTP response headers with curl -i."
+    ]
+  },
+  {
+    "id": "recon-02",
+    "name": "Service Matrix",
+    "category": "Recon",
+    "difficulty": "Easy",
+    "points": 50,
+    "cwe": "CWE-200",
+    "description": "Not every service speaks HTTP on a well-known port. Map the full service matrix.",
+    "hints": [
+      "The obvious ports are only part of the picture.",
+      "One hidden service answers on a high port in the 8xxx range.",
+      "Enumerate paths on the hidden service at :8081."
+    ]
+  },
+  {
+    "id": "recon-03",
+    "name": "Shadow Services",
+    "category": "Recon",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "The WAF gate hides a diagnostics page that describes the lab's shadow services.",
+    "hints": [
+      "Find the service on port 5050 first.",
+      "Services often expose /health or /diag style paths.",
+      "Browse http://127.0.0.1:5050/diag/ports."
+    ]
+  },
+  {
+    "id": "recon-04",
+    "name": "Banner Grabber",
+    "category": "Recon",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "Grab service banners. One banner carries more than a version string.",
+    "hints": [
+      "Connect to the plaintext file service on 2121.",
+      "Read the welcome banner before logging in.",
+      "Multi-line banners carry extra commentary."
+    ]
+  },
+  {
+    "id": "recon-05",
+    "name": "HTTP Surface",
+    "category": "Recon",
+    "difficulty": "Easy",
+    "points": 50,
+    "cwe": "CWE-200",
+    "description": "Enumerate the web server's declared surface.",
+    "hints": [
+      "Start with robots.txt.",
+      "robots.txt may reference a sitemap.",
+      "Fetch /sitemap.xml."
+    ]
+  },
+  {
+    "id": "ftp-01",
+    "name": "FTP-01 Anonymous Access",
+    "category": "FTP",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-287",
+    "description": "Log in to the FTP service without valid credentials.",
+    "hints": [
+      "Some FTP servers allow a guest login.",
+      "Try user 'anonymous' with any email as password.",
+      "Default directory listing after anonymous login holds the flag."
+    ]
+  },
+  {
+    "id": "ftp-02",
+    "name": "FTP-02 Backup Discovery",
+    "category": "FTP",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-530",
+    "description": "A developer left a backup archive on the FTP server. Retrieve and inspect it.",
+    "hints": [
+      "Look for archive files (.zip) after anonymous login.",
+      "Download backup.zip and extract it.",
+      "old_config.txt inside the archive is interesting."
+    ]
+  },
+  {
+    "id": "ftp-03",
+    "name": "FTP-03 Credential Reuse",
+    "category": "FTP",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-522",
+    "description": "A password found in an FTP backup works somewhere else. Prove the reuse.",
+    "hints": [
+      "credentials.old inside the backup lists a service account.",
+      "That account is also an SSH user on port 2222.",
+      "Log into SSH as that user to collect the reuse flag."
+    ]
+  },
+  {
+    "id": "ftp-04",
+    "name": "FTP-04 Hidden Directory",
+    "category": "FTP",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-284",
+    "description": "A directory is deliberately excluded from listings. Find it anyway.",
+    "hints": [
+      "LIST does not show dot-directories by default.",
+      "Try changing directory blind with CWD.",
+      "Try CWD .backup then LIST."
+    ]
+  },
+  {
+    "id": "telnet-01",
+    "name": "Telnet Enumeration",
+    "category": "Telnet",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "Identify the embedded management console and read its banner.",
+    "hints": [
+      "Scan for the telnet-like service on a non-standard port.",
+      "Port 2323 is not the classic 23.",
+      "Read the full banner on connect."
+    ]
+  },
+  {
+    "id": "telnet-02",
+    "name": "Telnet Weak Credentials",
+    "category": "Telnet",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-798",
+    "description": "Authenticate to the embedded management console using a leaked password.",
+    "hints": [
+      "The password is not admin:admin.",
+      "An FTP file mentions an old employee's console password.",
+      "employee_notes.txt in the FTP home directory."
+    ]
+  },
+  {
+    "id": "telnet-03",
+    "name": "Telnet Config Disclosure",
+    "category": "Telnet",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "Once logged in, interrogate the console's configuration.",
+    "hints": [
+      "The console supports a 'show' command.",
+      "Try: show config",
+      "Configuration leaks credentials used by other services."
+    ]
+  },
+  {
+    "id": "telnet-04",
+    "name": "Telnet Fuzzing",
+    "category": "Fuzzing",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-119",
+    "description": "Fuzz the console inputs (username, password, terminal type, IAC negotiation) and capture the crash artifact.",
+    "hints": [
+      "Send a username far longer than expected.",
+      "Telnet options (IAC) are structured input worth mutating.",
+      "Send 300+ bytes as username to trigger the length bug."
+    ]
+  },
+  {
+    "id": "ssh-01",
+    "name": "SSH Service Identification",
+    "category": "SSH",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "Identify the SSH service on the non-standard port and obtain a session.",
+    "hints": [
+      "SSH is not on port 22 here.",
+      "Find credentials from an earlier track.",
+      "Any valid login presents the lab MOTD with the flag."
+    ]
+  },
+  {
+    "id": "ssh-02",
+    "name": "SSH via SMB Credentials",
+    "category": "SSH",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-522",
+    "description": "Credentials found in an SMB share open an SSH session.",
+    "hints": [
+      "Enumerate SMB shares first.",
+      "The backup share requires authentication.",
+      "Log into SSH as svc_backup."
+    ]
+  },
+  {
+    "id": "ssh-03",
+    "name": "SSH Key Authentication",
+    "category": "SSH",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-522",
+    "description": "A private key sits in an old backup. Use it to authenticate.",
+    "hints": [
+      "backup.zip contains more than text files.",
+      "An id_rsa key is inside the archive.",
+      "Log in as user 'backup' with the key (password auth is disabled for that account)."
+    ]
+  },
+  {
+    "id": "smb-01",
+    "name": "SMB Enumeration",
+    "category": "SMB",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "Enumerate shares, workgroup and OS hints on port 445.",
+    "hints": [
+      "smbclient -L //target, or enum4linux.",
+      "nmap SMB scripts help too.",
+      "The public share's readme holds the flag."
+    ]
+  },
+  {
+    "id": "smb-02",
+    "name": "SMB Anonymous Read",
+    "category": "SMB",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-284",
+    "description": "Read a share that allows guest access.",
+    "hints": [
+      "Guest access works on one share.",
+      "Connect to \\\\target\\public anonymously.",
+      "notes.txt in the public share."
+    ]
+  },
+  {
+    "id": "smb-03",
+    "name": "SMB Old Backup Share",
+    "category": "SMB",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-530",
+    "description": "The backup share requires credentials. Find them and read old_backup.txt.",
+    "hints": [
+      "Credentials leak from other tracks (FTP backup or telnet config).",
+      "svc_backup's password works here.",
+      "\\\\target\\backup\\old_backup.txt."
+    ]
+  },
+  {
+    "id": "smb-04",
+    "name": "SMB Engineering Notes",
+    "category": "SMB",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-200",
+    "description": "Reach the engineering share and read its notes.",
+    "hints": [
+      "Enumerate all share names, not just the obvious ones.",
+      "The telnet config leak names the engineering share credentials.",
+      "\\\\target\\engineering\\engineering_notes.txt."
+    ]
+  },
+  {
+    "id": "smb-05",
+    "name": "SMB Hidden Share",
+    "category": "SMB",
+    "difficulty": "Expert",
+    "points": 150,
+    "cwe": "CWE-284",
+    "description": "One share is not advertised in the share list. Guess it.",
+    "hints": [
+      "Hidden shares conventionally end with $.",
+      "Think like a developer: dev$, test$, tmp$.",
+      "Connect to \\\\target\\dev$ directly."
+    ]
+  },
+  {
+    "id": "web-01",
+    "name": "robots.txt Discovery",
+    "category": "Web",
+    "difficulty": "Easy",
+    "points": 50,
+    "cwe": "CWE-200",
+    "description": "Read the crawler rules and visit what they reveal.",
+    "hints": [
+      "Fetch /robots.txt first on any site.",
+      "Disallowed paths are invitations.",
+      "/admin-old contains the flag; /not-the-flag does not."
+    ]
+  },
+  {
+    "id": "web-02",
+    "name": "HTML Comment",
+    "category": "Web",
+    "difficulty": "Easy",
+    "points": 50,
+    "cwe": "CWE-615",
+    "description": "Developers leave comments in markup. Read the page source.",
+    "hints": [
+      "View source, not rendered text.",
+      "Search the homepage HTML for comment markers.",
+      "grep for 'FLAG' in the response body."
+    ]
+  },
+  {
+    "id": "web-03",
+    "name": "Git Repository Leak",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-527",
+    "description": "A .git directory was deployed to production. Recover history.",
+    "hints": [
+      "Check /.git/HEAD.",
+      "Logs of refs reveal old commits.",
+      "Read /.git/logs/refs/heads/main for the removed password commit."
+    ]
+  },
+  {
+    "id": "web-04",
+    "name": "Config Backup File",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-530",
+    "description": "Find the editor backup of the site configuration.",
+    "hints": [
+      "File extensions like .bak, .old, ~ are classic backups.",
+      "Try /config.bak.",
+      "Backup configs leak keys and comments."
+    ]
+  },
+  {
+    "id": "web-05",
+    "name": "SQL Injection",
+    "category": "Web",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-89",
+    "description": "The intranet search feature talks to SQLite. Make it return hidden rows.",
+    "hints": [
+      "Search inputs that reach SQL are worth quoting.",
+      "Break out of the string: ' OR 1=1--",
+      "/search?q=' OR 1=1-- returns a row marked secret."
+    ]
+  },
+  {
+    "id": "web-06",
+    "name": "Debug Page Leak",
+    "category": "Web",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "A developer debug page was left enabled in production.",
+    "hints": [
+      "There is a /debug route on the target.",
+      "It prints runtime diagnostics.",
+      "Read the diagnostic block for the flag."
+    ]
+  },
+  {
+    "id": "web-07",
+    "name": "Log Discovery",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-532",
+    "description": "Application logs are web-accessible. Read them.",
+    "hints": [
+      "Log files love predictable names under /logs/.",
+      "Try /logs/app.log.",
+      "Logs leak usernames, paths and developer mistakes."
+    ]
+  },
+  {
+    "id": "web-08",
+    "name": "Reflected Cross-Site Scripting",
+    "category": "Web",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-79",
+    "description": "Prove the search page reflects unencoded input into the response.",
+    "hints": [
+      "Reflect input like <script>alert(1)</script>.",
+      "The server rewards a successful reflection proof.",
+      "POST or GET the payload to /search and read the response."
+    ]
+  },
+  {
+    "id": "api-01",
+    "name": "API-01 Who Is Here?",
+    "category": "API Security",
+    "difficulty": "Easy",
+    "points": 50,
+    "cwe": "CWE-200",
+    "description": "The users endpoint returns far more than usernames.",
+    "hints": [
+      "GET /api/v1/users",
+      "Response metadata is unusually chatty.",
+      "Read every field including meta/notes."
+    ]
+  },
+  {
+    "id": "api-02",
+    "name": "API-02 BOLA Profile Access",
+    "category": "API Security",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-639",
+    "description": "Object identifiers in /api/v1/profile/<id> are not authorization.",
+    "hints": [
+      "Your profile is 1001.",
+      "Neighbouring identifiers belong to other people.",
+      "Fetch /api/v1/profile/1002."
+    ]
+  },
+  {
+    "id": "api-03",
+    "name": "API-03 Admin Enumeration",
+    "category": "Authorization",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-862",
+    "description": "Look up the admin account and then read its profile.",
+    "hints": [
+      "GET /api/v1/user?username=admin",
+      "Use the returned profile_id with /api/v1/profile/.",
+      "The admin profile's note field holds the flag."
+    ]
+  },
+  {
+    "id": "api-04",
+    "name": "API-04 Excessive Data Exposure",
+    "category": "API Security",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "Hiding fields in the UI is not authorization. Request the raw object.",
+    "hints": [
+      "The UI shows username and email only.",
+      "Raw API objects carry internal fields.",
+      "Read profile 1001's note field."
+    ]
+  },
+  {
+    "id": "api-05",
+    "name": "API-05 Client-Side Secret",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 150,
+    "cwe": "CWE-798",
+    "description": "An internal API key is shipped to browsers. Find it.",
+    "hints": [
+      "Inspect static JavaScript, not just HTML.",
+      "/static/js/app.js",
+      "grep for VL_INTERNAL_KEY."
+    ]
+  },
+  {
+    "id": "api-06",
+    "name": "API-06 Admin Export",
+    "category": "Authorization",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-862",
+    "description": "Use the leaked internal key on the admin export endpoint.",
+    "hints": [
+      "GET /api/v1/admin/export",
+      "Send the key from app.js as X-Internal-Key.",
+      "Authorization by shared secret only."
+    ]
+  },
+  {
+    "id": "api-07",
+    "name": "API-07 Mass Assignment",
+    "category": "API Security",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-915",
+    "description": "The profile PATCH endpoint accepts properties the UI never sends.",
+    "hints": [
+      "PATCH /api/v1/profile with JSON.",
+      "Send properties the form doesn't expose: role, is_admin.",
+      "Escalate to role=admin then re-read your profile."
+    ]
+  },
+  {
+    "id": "api-08",
+    "name": "API-08 Weak JWT Secret",
+    "category": "Authentication",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-321",
+    "description": "Crack the JWT signing secret and mint an admin token.",
+    "hints": [
+      "The token uses HS256.",
+      "Secrets leak in old configs and settings files.",
+      "config.bak / flask_settings.py both mention the lab secret."
+    ]
+  },
+  {
+    "id": "api-09",
+    "name": "API-09 Algorithm Confusion",
+    "category": "Authentication",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-347",
+    "description": "The verifier has a fallback path for tokens with no signature.",
+    "hints": [
+      "Inspect the JWT header: {\"alg\":...}.",
+      "Some libraries accept alg: none.",
+      "Forge a token with alg none and role admin."
+    ]
+  },
+  {
+    "id": "api-10",
+    "name": "API-10 Predictable Reset",
+    "category": "Authentication",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-330",
+    "description": "Password reset tokens are derived, not random. Reset the admin account.",
+    "hints": [
+      "POST /api/v1/reset with a username.",
+      "The token is a hash of predictable inputs.",
+      "md5(username + '1234') style derivation - see the research hint."
+    ]
+  },
+  {
+    "id": "api-11",
+    "name": "API-11 SSRF Fetch",
+    "category": "SSRF",
+    "difficulty": "Hard",
+    "points": 175,
+    "cwe": "CWE-918",
+    "description": "The URL-preview endpoint fetches server-side. Make it fetch an internal resource.",
+    "hints": [
+      "GET /api/v1/fetch?url=",
+      "Only lab-internal hosts are reachable - that's the point.",
+      "Fetch http://127.0.0.1:5000/internal/secret"
+    ]
+  },
+  {
+    "id": "api-12",
+    "name": "API-12 Fake Metadata",
+    "category": "SSRF",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-918",
+    "description": "An educational metadata endpoint imitates cloud instance metadata. Reach it through the fetch endpoint.",
+    "hints": [
+      "Cloud metadata lives at 169.254.169.254 in the real world.",
+      "This lab serves a safe fake at /internal/metadata.",
+      "Fetch it via /api/v1/fetch."
+    ]
+  },
+  {
+    "id": "api-13",
+    "name": "API-13 Shadow API Inventory",
+    "category": "API Security",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-1059",
+    "description": "Documented APIs are not all APIs. Inventory the undocumented versions.",
+    "hints": [
+      "Version prefixes beyond /api/v1/ exist.",
+      "Try /api/v2/ and /api/internal/.",
+      "One undocumented route returns the flag."
+    ]
+  },
+  {
+    "id": "api-14",
+    "name": "API-14 OTP Rate Limit",
+    "category": "API Security",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-307",
+    "description": "The OTP endpoint barely limits attempts. Brute-force the 4-digit code.",
+    "hints": [
+      "POST /api/v1/otp to request a code.",
+      "Send codes to /api/v1/otp/verify in a loop.",
+      "4 digits, no lockout: ~10000 requests."
+    ]
+  },
+  {
+    "id": "api-15",
+    "name": "API-15 CORS Misconfiguration",
+    "category": "API Security",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-942",
+    "description": "The CORS policy echoes any Origin back with credentials.",
+    "hints": [
+      "Send an Origin header you control.",
+      "Observe Access-Control-Allow-Origin.",
+      "GET /api/v1/cors-demo with Origin: https://evil.test"
+    ]
+  },
+  {
+    "id": "api-16",
+    "name": "API-16 Function-Level Authorization",
+    "category": "Authorization",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-285",
+    "description": "A user-role token reaches an admin-only action.",
+    "hints": [
+      "POST /api/v1/user/export with a normal user token.",
+      "Admin checks are missing on this route.",
+      "Any valid token works - that's the bug."
+    ]
+  },
+  {
+    "id": "api-17",
+    "name": "API-17 Fuzzing Lab",
+    "category": "Fuzzing",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-20",
+    "description": "Fuzz /api/v1/fuzz with typed and malformed input and classify each response.",
+    "hints": [
+      "Not every 4xx is a bug - read status semantics.",
+      "JSON type confusion (arrays/objects where scalars expected) is a category of its own.",
+      "Send x as an object to trigger the unhandled case."
+    ]
+  },
+  {
+    "id": "gql-01",
+    "name": "GraphQL Schema Discovery",
+    "category": "GraphQL",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "Introspect the GraphQL endpoint and dump the schema.",
+    "hints": [
+      "POST /graphql with a query.",
+      "Introspection query: {__schema{types{name,fields{name}}}}",
+      "Hidden types/fields appear in the dump."
+    ]
+  },
+  {
+    "id": "gql-02",
+    "name": "GraphQL Authorization Bypass",
+    "category": "GraphQL",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-863",
+    "description": "The server blocks the sensitive field name but not its aliases.",
+    "hints": [
+      "Querying internalSecret directly is blocked.",
+      "GraphQL supports aliases: alias: field.",
+      "Use { leaked: internalSecret }."
+    ]
+  },
+  {
+    "id": "gql-03",
+    "name": "GraphQL Query Complexity",
+    "category": "GraphQL",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-400",
+    "description": "Query depth/complexity limits are enforced superficially. Abuse batching.",
+    "hints": [
+      "Depth limits don't stop aliases or batches.",
+      "Send an array of queries in one request.",
+      "Batch more than 8 queries to hit the debug path."
+    ]
+  },
+  {
+    "id": "waf-01",
+    "name": "WAF 403 Bypass",
+    "category": "WAF / 403 / 406",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-863",
+    "description": "/admin on port 5050 always answers 403. The deny rule is exact-match. Find the route anyway.",
+    "hints": [
+      "The filter compares the raw path for exact equality.",
+      "Routing normalizes the path before matching.",
+      "Try a trailing slash: /admin/"
+    ]
+  },
+  {
+    "id": "waf-02",
+    "name": "Header Trust",
+    "category": "WAF / 403 / 406",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-290",
+    "description": "An internal panel trusts a proxy-supplied client identity header.",
+    "hints": [
+      "Reverse proxies commonly set X-Forwarded-For.",
+      "The app trusts it without validation.",
+      "Request /internal-panel with X-Forwarded-For: 127.0.0.1"
+    ]
+  },
+  {
+    "id": "waf-03",
+    "name": "HTTP Method Authorization",
+    "category": "WAF / 403 / 406",
+    "difficulty": "Medium",
+    "points": 125,
+    "cwe": "CWE-863",
+    "description": "GET /admin/action is blocked. Authorization must not depend on method.",
+    "hints": [
+      "Only one method is checked.",
+      "Try POST, PUT, PATCH on the same path.",
+      "POST /admin/action is authorized."
+    ]
+  },
+  {
+    "id": "waf-04",
+    "name": "406 Filter Mismatch",
+    "category": "WAF / 403 / 406",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-116",
+    "description": "The filter scans the raw body; the backend decodes it. Prove the parser mismatch.",
+    "hints": [
+      "406 means the filter didn't like your input.",
+      "The keyword filter sees raw bytes only.",
+      "Send the keyword as \\uXXXX escapes in a JSON body."
+    ]
+  },
+  {
+    "id": "waf-05",
+    "name": "Double-Decode Traversal",
+    "category": "WAF / 403 / 406",
+    "difficulty": "Expert",
+    "points": 175,
+    "cwe": "CWE-22",
+    "description": "The filter blocks '..' after one decode; the backend decodes twice.",
+    "hints": [
+      "/download?file= is filtered for '..'.",
+      "URL-encode a percent sign to get double encoding.",
+      "Use %252e%252e%252f to reach /secret/flag.txt"
+    ]
+  },
+  {
+    "id": "upload-01",
+    "name": "Upload Extension Filter",
+    "category": "File Upload",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-434",
+    "description": "The extension denylist is case-sensitive.",
+    "hints": [
+      ".php is blocked.",
+      "Filters compare byte-for-byte.",
+      "Upload flag.pHp (mixed case)."
+    ]
+  },
+  {
+    "id": "upload-02",
+    "name": "Upload Content-Type Trust",
+    "category": "File Upload",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-434",
+    "description": "The server trusts the client-supplied Content-Type.",
+    "hints": [
+      "Set Content-Type: image/png on a non-image body.",
+      "Multipart metadata is attacker-controlled.",
+      "Upload with a spoofed content type."
+    ]
+  },
+  {
+    "id": "upload-03",
+    "name": "Upload Path Traversal",
+    "category": "File Upload",
+    "difficulty": "Hard",
+    "points": 175,
+    "cwe": "CWE-22",
+    "description": "The filename is joined to the upload directory without sanitization.",
+    "hints": [
+      "Filename is attacker controlled.",
+      "Include ../ in the filename.",
+      "Write outside uploads/ and observe the response."
+    ]
+  },
+  {
+    "id": "upload-04",
+    "name": "Stored HTML/SVG Upload",
+    "category": "File Upload",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-434",
+    "description": "Uploaded HTML/SVG is served inline with its original content type.",
+    "hints": [
+      ".html and .svg are allowed types.",
+      "The server serves uploads back with their content type.",
+      "Upload an .svg then fetch /files/<name> and read the response header."
+    ]
+  },
+  {
+    "id": "crypto-01",
+    "name": "Crypto ECB Identification",
+    "category": "Cryptography",
+    "difficulty": "Medium",
+    "points": 125,
+    "cwe": "CWE-327",
+    "description": "Identify the block cipher mode used by the token oracle.",
+    "hints": [
+      "Identical plaintext blocks produce identical ciphertext blocks.",
+      "That pattern is the definition of one mode.",
+      "Submit the mode name at /crypto/ecb?mode=ECB"
+    ]
+  },
+  {
+    "id": "crypto-02",
+    "name": "Crypto Predictable RNG",
+    "category": "Cryptography",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-338",
+    "description": "Session tokens come from a seeded PRNG. Predict the next one.",
+    "hints": [
+      "seed = current time in seconds.",
+      "Reproduce the generator locally.",
+      "Claim the predicted token at /crypto/token/claim."
+    ]
+  },
+  {
+    "id": "crypto-03",
+    "name": "Crypto CBC Bit Flipping",
+    "category": "Cryptography",
+    "difficulty": "Expert",
+    "points": 150,
+    "cwe": "CWE-327",
+    "description": "CBC ciphertext with no MAC is malleable. Flip role=user to role=admin.",
+    "hints": [
+      "IV is published alongside the ciphertext.",
+      "Flipping a ciphertext block alters the next plaintext block.",
+      "Verify the modified blob at /crypto/verify."
+    ]
+  },
+  {
+    "id": "crypto-04",
+    "name": "Crypto Hash Length Extension",
+    "category": "Cryptography",
+    "difficulty": "Expert",
+    "points": 175,
+    "cwe": "CWE-354",
+    "description": "The API signs messages as sha256(secret || message). Forge a signature without the secret.",
+    "hints": [
+      "Secret-prefix MACs are length-extension friendly.",
+      "Append your payload and compute the continuation state.",
+      "Forge a signature for msg ending in &role=admin."
+    ]
+  },
+  {
+    "id": "cve-01",
+    "name": "CVE Hunter: FTP fingerprint",
+    "category": "CVE Hunting",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-78",
+    "description": "Product: vsftpd / Version: 2.3.4. Which historical CVE is associated with this version? (research only)",
+    "hints": [
+      "This version is famous for a backdoored release.",
+      "Search NVD for vsftpd 2.3.4 backdoor.",
+      "CVE-2011-2523"
+    ]
+  },
+  {
+    "id": "cve-02",
+    "name": "CVE Hunter: ProFTPD mod_copy",
+    "category": "CVE Hunting",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-22",
+    "description": "Product: ProFTPD / Component: mod_copy / Issue: arbitrary file copy leading to RCE. Identify the CVE.",
+    "hints": [
+      "mod_copy SITE CPFR/CPTO misuse.",
+      "Search NVD for ProFTPD mod_copy 2019.",
+      "CVE-2019-12815"
+    ]
+  },
+  {
+    "id": "cve-03",
+    "name": "CVE Hunter: SMBv1 EternalBlue",
+    "category": "CVE Hunting",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-20",
+    "description": "Protocol: SMBv1 / Windows SMB server. Identify the remote code execution CVE from 2017.",
+    "hints": [
+      "WannaCry-era vulnerability.",
+      "Patch: MS17-010.",
+      "CVE-2017-0144"
+    ]
+  },
+  {
+    "id": "cve-04",
+    "name": "CVE Hunter: SMBv3.1.1 Compression",
+    "category": "CVE Hunting",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-190",
+    "description": "Protocol: SMBv3.1.1 / Feature: compression handling. Identify the 2020 critical RCE CVE.",
+    "hints": [
+      "Pre-auth RCE in the compression driver.",
+      "Codename: SMBGhost.",
+      "CVE-2020-0796"
+    ]
+  },
+  {
+    "id": "cve-05",
+    "name": "CVE Hunter: OpenSSH regreSSHion",
+    "category": "CVE Hunting",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-362",
+    "description": "Service: sshd / Issue: signal-handling race (CVE-2006-era regression, disclosed 2024). Identify the CVE.",
+    "hints": [
+      "A regression of a 2006 bug.",
+      "Public name: regreSSHion.",
+      "CVE-2024-6387"
+    ]
+  },
+  {
+    "id": "cve-06",
+    "name": "CVE Hunter: Telnetd stack overflow",
+    "category": "CVE Hunting",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-121",
+    "description": "Product: NETGEAR RAX30 telnetd / Issue: stack-based buffer overflow with root RCE. Identify the CVE.",
+    "hints": [
+      "Consumer router telnet service.",
+      "2023 disclosure affecting RAX30.",
+      "CVE-2023-34285"
+    ]
+  },
+  {
+    "id": "cve-07",
+    "name": "CVE Hunter: IPCOMShell TELNET",
+    "category": "CVE Hunting",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-122",
+    "description": "Product: Interpeak IPCOMShell TELNET server / Issue: heap overflow with memory corruption. Identify the CVE.",
+    "hints": [
+      "Embedded shell product from the mid-2010s.",
+      "Search NVD for IPCOMShell.",
+      "CVE-2019-7713"
+    ]
+  },
+  {
+    "id": "cve-08",
+    "name": "CVE Hunter: Tenda Telnet injection",
+    "category": "CVE Hunting",
+    "difficulty": "Hard",
+    "points": 100,
+    "cwe": "CWE-78",
+    "description": "Product: Tenda AC9 firmware / Issue: command injection via Telnet functionality. Identify the CVE.",
+    "hints": [
+      "2025-dated advisory.",
+      "Consumer router OS command injection.",
+      "CVE-2025-45042"
+    ]
+  },
+  {
+    "id": "cve-09",
+    "name": "CWE Hunter: Untrusted Deserialization",
+    "category": "CVE Hunting",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-502",
+    "description": "Scenario: an application deserializes attacker-influenced objects from a cache. Which CWE applies? (format: CWE-NNN)",
+    "hints": [
+      "It is a weakness classification, not a CVE.",
+      "Language-agnostic: unsafe object reconstruction.",
+      "CWE-502"
+    ]
+  },
+  {
+    "id": "cve-10",
+    "name": "CWE Hunter: Spoofed Proxy Identity",
+    "category": "CVE Hunting",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-290",
+    "description": "Scenario: an application authenticates clients by a spoofable X-Forwarded-For header. Which CWE? (format: CWE-NNN)",
+    "hints": [
+      "Authentication by attacker-controlled identity.",
+      "CWE-290 area: authentication bypass by spoofing.",
+      "CWE-290"
+    ]
+  },
+  {
+    "id": "flask-01",
+    "name": "FLASK-01 Template Injection Detection",
+    "category": "Python RCE",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-1336",
+    "description": "Is /profile?name= evaluated by the template engine? Prove it with a harmless expression.",
+    "hints": [
+      "Send {{7*7}} as the name parameter.",
+      "If 49 comes back, the input is a template.",
+      "/profile?name={{7*7}}"
+    ]
+  },
+  {
+    "id": "flask-02",
+    "name": "FLASK-02 Jinja Runtime Escape",
+    "category": "Python RCE",
+    "difficulty": "Expert",
+    "points": 150,
+    "cwe": "CWE-1336",
+    "description": "Use template injection to read the lab flag file for this challenge.",
+    "hints": [
+      "Find the configured flag directory (/internal/config).",
+      "Escape into the Python object graph from the template context.",
+      "Read <flagdir>/ssti.flag through the Jinja runtime."
+    ]
+  },
+  {
+    "id": "flask-03",
+    "name": "FLASK-03 SSTI Filter Failure",
+    "category": "Python RCE",
+    "difficulty": "Expert",
+    "points": 125,
+    "cwe": "CWE-184",
+    "description": "/safe-profile blocks suspicious words. Prove a blacklist is not a sandbox.",
+    "hints": [
+      "Blocked: import, eval, os, subprocess, flag (words, not behavior).",
+      "Construct attribute access dynamically with |attr.",
+      "Fetch the path via request.args so the word 'flag' never appears."
+    ]
+  },
+  {
+    "id": "flask-04",
+    "name": "FLASK-04 Debug Mode Exposed",
+    "category": "Python RCE",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-489",
+    "description": "A development instance with debugging enabled is running on the lab network.",
+    "hints": [
+      "A hidden service listens on port 8000.",
+      "Its / page carries a traceback-style footer.",
+      "Find the comment marked FLASK-04."
+    ]
+  },
+  {
+    "id": "flask-05",
+    "name": "FLASK-05 Debugger PIN Investigation",
+    "category": "Python RCE",
+    "difficulty": "Hard",
+    "points": 150,
+    "cwe": "CWE-330",
+    "description": "The debugger console is protected by a PIN derived from predictable machine attributes. Compute the lab PIN and submit it.",
+    "hints": [
+      "Research how debugger PINs are generated (public research).",
+      "/debug-lab/info lists username, app path, mac and machine id.",
+      "Combine those attributes with the documented md5 grouping into a 6-3 PIN."
+    ]
+  },
+  {
+    "id": "flask-06",
+    "name": "FLASK-06 Debug Console",
+    "category": "Python RCE",
+    "difficulty": "Expert",
+    "points": 200,
+    "cwe": "CWE-489",
+    "description": "Use the debugger console to read the lab flag file.",
+    "hints": [
+      "Enter the computed PIN at /debug-lab/console.",
+      "Evaluate an expression that opens a file.",
+      "Read <flagdir>/debugger.flag."
+    ]
+  },
+  {
+    "id": "flask-07",
+    "name": "FLASK-07 Weak Application Secret",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-798",
+    "description": "The Flask session signing key is a weak, leaked string. Find it.",
+    "hints": [
+      "Leaked source/settings files are prime suspects.",
+      "static/leaks/flask_settings.py",
+      "Any string used to sign cookies can be cracked."
+    ]
+  },
+  {
+    "id": "flask-08",
+    "name": "FLASK-08 Session Integrity",
+    "category": "Authentication",
+    "difficulty": "Hard",
+    "points": 175,
+    "cwe": "CWE-565",
+    "description": "Forge an administrator session cookie and visit /admin.",
+    "hints": [
+      "Flask cookies are itsdangerous-signed payloads.",
+      "Use the leaked secret with flask.session.dumps or itsdangerous.",
+      "Set role=admin then GET /admin."
+    ]
+  },
+  {
+    "id": "flask-09",
+    "name": "FLASK-09 Cache Identification",
+    "category": "Python RCE",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "Identify which caching component and serialization format the app uses.",
+    "hints": [
+      "GET /api/v1/cache/info",
+      "Read the serializer field.",
+      "The response also carries the flag."
+    ]
+  },
+  {
+    "id": "flask-10",
+    "name": "FLASK-10 Pickle Discovery",
+    "category": "Python RCE",
+    "difficulty": "Medium",
+    "points": 125,
+    "cwe": "CWE-502",
+    "description": "Find the cache backend source leak and identify the serializer.",
+    "hints": [
+      "Developer source files leak under /static/leaks/.",
+      "cache_backend.py documents the storage format.",
+      "Read the FLASK-10 comment."
+    ]
+  },
+  {
+    "id": "flask-11",
+    "name": "FLASK-11 Cache Architecture",
+    "category": "Python RCE",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "Map where cache objects physically live.",
+    "hints": [
+      "GET /api/v1/cache/stats",
+      "Cache files sit on local disk under ./data/cache.",
+      "The stats response carries the flag."
+    ]
+  },
+  {
+    "id": "flask-12",
+    "name": "FLASK-12 Unsafe Deserialization",
+    "category": "Python RCE",
+    "difficulty": "Expert",
+    "points": 175,
+    "cwe": "CWE-502",
+    "description": "Write an attacker-controlled pickle into the cache store and have the app deserialize it.",
+    "hints": [
+      "Upload path traversal can write outside uploads/.",
+      "Place a pickle at data/cache/<key>.pkl.",
+      "Then GET /api/v1/cache/get?key=<key>."
+    ]
+  },
+  {
+    "id": "flask-13",
+    "name": "FLASK-13 CVE-2021-33026",
+    "category": "CVE Hunting",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-502",
+    "description": "Component: Flask-Caching (through 1.10.1) / Issue: unsafe pickle serialization in cache backends. Which CVE?",
+    "hints": [
+      "Research the Flask-Caching pickle issue and its prerequisites.",
+      "Prerequisites matter: cache poisoning or attacker control of the backend.",
+      "CVE-2021-33026"
+    ]
+  },
+  {
+    "id": "flask-14",
+    "name": "FLASK-14 Controlled RCE",
+    "category": "Python RCE",
+    "difficulty": "Expert",
+    "points": 250,
+    "cwe": "CWE-502",
+    "description": "Use the deserialization path to execute a lab command and read the RCE flag file.",
+    "hints": [
+      "Your pickle payload can run OS commands.",
+      "Read <flagdir>/rce.flag.",
+      "The response also reveals a service credential - chain it into SSH."
+    ]
+  },
+  {
+    "id": "flask-boss",
+    "name": "FLASK-BOSS Three Doors",
+    "category": "Python RCE",
+    "difficulty": "Expert",
+    "points": 500,
+    "cwe": "CWE-1336",
+    "description": "There are three ways into this application's Python runtime: template injection, the debugger, and deserialization. Understand them and solve two.",
+    "hints": [
+      "SSTI, Werkzeug debugger, pickle cache.",
+      "Two of flask-02 / flask-06 / flask-12 must be solved first.",
+      "The flag unlocks once two doors are open."
+    ]
+  },
+  {
+    "id": "linux-01",
+    "name": "Local Enumeration",
+    "category": "Linux Privilege Escalation",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "You have a user shell. Enumerate the machine before exploiting anything.",
+    "hints": [
+      "id, uname, sudo -l, find, crontab, env.",
+      "Look in /opt/vulnlab.",
+      "Read /opt/vulnlab/README.local."
+    ]
+  },
+  {
+    "id": "linux-02",
+    "name": "SUID Discovery",
+    "category": "Linux Privilege Escalation",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-732",
+    "description": "Find SUID binaries and the lab's suid notes.",
+    "hints": [
+      "find / -perm -4000 2>/dev/null",
+      "Notes live under /usr/local/share/vulnlab.",
+      "Read suid.flag there."
+    ]
+  },
+  {
+    "id": "linux-03",
+    "name": "SUID Exploitation",
+    "category": "Linux Privilege Escalation",
+    "difficulty": "Hard",
+    "points": 250,
+    "cwe": "CWE-250",
+    "description": "/usr/local/bin/vulnhelper runs as root and takes a file argument. Make it read a root-owned flag.",
+    "hints": [
+      "ls -l shows the SUID bit.",
+      "--read takes any path (no validation).",
+      "Run: vulnhelper --read /root/suid.flag"
+    ]
+  },
+  {
+    "id": "linux-04",
+    "name": "Writable Cron Script",
+    "category": "Linux Privilege Escalation",
+    "difficulty": "Hard",
+    "points": 200,
+    "cwe": "CWE-732",
+    "description": "A root cron job runs a script the lab user can write.",
+    "hints": [
+      "sudo -l and /etc/cron.d/vulnlab both matter.",
+      "/opt/vulnlab/maintenance.sh is writable and runs as root.",
+      "Overwrite it, then run it with sudo."
+    ]
+  },
+  {
+    "id": "linux-05",
+    "name": "PATH Hijack",
+    "category": "Linux Privilege Escalation",
+    "difficulty": "Hard",
+    "points": 200,
+    "cwe": "CWE-426",
+    "description": "A root scheduled task calls a command without an absolute path.",
+    "hints": [
+      "Read /etc/cron.d/vulnlab carefully - no leading slash on one command.",
+      "/opt/vulnlab/bin is writable and on the job's PATH.",
+      "Plant log-cleaner there, then trigger lab-tick."
+    ]
+  },
+  {
+    "id": "linux-06",
+    "name": "Environment Secret",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 125,
+    "cwe": "CWE-200",
+    "description": "A leaked environment variable unlocks an encrypted local file.",
+    "hints": [
+      "env and /proc/self/environ show inherited variables.",
+      "VULNLAB_BACKUP_KEY is exported.",
+      "vulnlab-decrypt /var/backups/creds.enc"
+    ]
+  },
+  {
+    "id": "linux-07",
+    "name": "Configuration Secrets",
+    "category": "Secrets",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-798",
+    "description": "Service configuration files hold more than settings.",
+    "hints": [
+      "/etc/vulnlab/",
+      "Read app.conf.",
+      "Configuration files reward careless comments."
+    ]
+  },
+  {
+    "id": "linux-08",
+    "name": "Cron Discovery",
+    "category": "Linux Privilege Escalation",
+    "difficulty": "Easy",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "Inventory scheduled tasks on the machine.",
+    "hints": [
+      "Look in /etc/cron.d/.",
+      "cat /etc/cron.d/vulnlab",
+      "A comment in the job file holds the flag."
+    ]
+  },
+  {
+    "id": "biz-01",
+    "name": "Business Logic: Negative Quantity",
+    "category": "Business Logic",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-841",
+    "description": "The shop never validates quantity sign. Order with a negative amount.",
+    "hints": [
+      "POST /api/v1/shop/order",
+      "Send qty=-1.",
+      "Your balance increases instead of decreasing."
+    ]
+  },
+  {
+    "id": "biz-02",
+    "name": "Business Logic: Race Condition",
+    "category": "Business Logic",
+    "difficulty": "Expert",
+    "points": 175,
+    "cwe": "CWE-362",
+    "description": "Balance check and deduction are separate steps. Redeem the same coupon twice concurrently.",
+    "hints": [
+      "POST /api/v1/redeem with the coupon field.",
+      "Fire several requests at the same time.",
+      "Two successful redeems yield the flag."
+    ]
+  },
+  {
+    "id": "biz-03",
+    "name": "Business Logic: Client Price",
+    "category": "Business Logic",
+    "difficulty": "Hard",
+    "points": 125,
+    "cwe": "CWE-472",
+    "description": "The client controls the price it pays. Buy the ROOT_ACCESS_TOKEN cheap.",
+    "hints": [
+      "POST /api/v1/shop/order accepts a price field.",
+      "Override price to 1 for the 100000-credit item.",
+      "Buy ROOT_ACCESS_TOKEN for 1 credit."
+    ]
+  },
+  {
+    "id": "bonus-01",
+    "name": "Hidden Backup File",
+    "category": "Bonus",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-530",
+    "description": "Dotfiles are invisible until you look for them.",
+    "hints": [
+      "In the user shell: ls -a everywhere.",
+      "/var/backups is a classic location.",
+      "cat /var/backups/.hidden"
+    ]
+  },
+  {
+    "id": "bonus-02",
+    "name": "JavaScript Source Map",
+    "category": "Bonus",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-540",
+    "description": "minified JavaScript often ships its source map.",
+    "hints": [
+      "app.js ends with a sourceMappingURL comment.",
+      "Fetch /static/js/app.js.map.",
+      "The map contains developer-embedded comments."
+    ]
+  },
+  {
+    "id": "bonus-03",
+    "name": "Old Employee Notes",
+    "category": "Bonus",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "An FTP file documents an account nobody disabled.",
+    "hints": [
+      "FTP anonymous home directory.",
+      "employee_notes.txt",
+      "The note itself carries the flag."
+    ]
+  },
+  {
+    "id": "bonus-04",
+    "name": "Process Environment",
+    "category": "Bonus",
+    "difficulty": "Medium",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "Inspect the process environment in the user shell.",
+    "hints": [
+      "/proc/self/environ is NUL-delimited - use tr or grep.",
+      "Look for VULNLAB_BONUS_ENV.",
+      "cat /proc/self/environ | tr '\\0' '\\n'"
+    ]
+  },
+  {
+    "id": "bonus-05",
+    "name": "Dead Debug Endpoint",
+    "category": "Bonus",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-200",
+    "description": "A decommissioned debug route still answers with a marker.",
+    "hints": [
+      "robots.txt lists /debug-old.",
+      "Compare it with /debug.",
+      "Read the X-Lab-Flag header of /debug-old."
+    ]
+  },
+  {
+    "id": "bonus-06",
+    "name": "Private Area",
+    "category": "Bonus",
+    "difficulty": "Easy",
+    "points": 75,
+    "cwe": "CWE-284",
+    "description": "robots.txt disallows /private. Follow it.",
+    "hints": [
+      "robots.txt again.",
+      "/private is reachable despite robots.",
+      "Read the page."
+    ]
+  },
+  {
+    "id": "bonus-07",
+    "name": "Log Poisoning Artifact",
+    "category": "Bonus",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-532",
+    "description": "Something was logged that shouldn't have been.",
+    "hints": [
+      "/logs/app.log contains several interesting lines.",
+      "Search for VULNLAB{ in the log.",
+      "One line records an internal debug call."
+    ]
+  },
+  {
+    "id": "bonus-08",
+    "name": "Stale Cache Entry",
+    "category": "Bonus",
+    "difficulty": "Medium",
+    "points": 100,
+    "cwe": "CWE-200",
+    "description": "A pre-warmed cache entry contains leftover data.",
+    "hints": [
+      "GET /api/v1/cache/get?key=demo",
+      "Cached objects keep their old payloads.",
+      "Read the returned object."
+    ]
+  },
+  {
+    "id": "boot-01",
+    "name": "Flask Chain Completion",
+    "category": "Boot-to-Root",
+    "difficulty": "Expert",
+    "points": 150,
+    "cwe": "CWE-200",
+    "description": "A credential revealed by a Flask attack path opens SSH. Complete the chain.",
+    "hints": [
+      "One of the Flask RCE routes exposes svc_flask's password.",
+      "Log into SSH on 2222 as svc_flask.",
+      "The login banner carries the chain flag."
+    ]
+  },
+  {
+    "id": "boot-02",
+    "name": "ROOT OF VULNLAB",
+    "category": "Boot-to-Root",
+    "difficulty": "Expert",
+    "points": 500,
+    "cwe": "CWE-250",
+    "description": "You have compromised multiple components of the machine. Obtain root and capture the final flag. Requires linux-01.",
+    "hints": [
+      "Enumerate before exploiting: SUID, sudo, cron, PATH.",
+      "There is more than one way to root.",
+      "cat /root/root.txt as root."
+    ]
+  },
+  {
+    "id": "csrf-01",
+    "name": "CSRF-01 Forged Role Change",
+    "category": "CSRF",
+    "difficulty": "easy",
+    "points": 100,
+    "cwe": "CWE-352",
+    "description": "Change a user's role without a CSRF token.",
+    "hints": [
+      "The endpoint only checks the session cookie.",
+      "Any page can auto-submit the form for a logged-in admin.",
+      "solution: POST /admin/users/role with a forged admin session cookie.",
+      "solution: The response confirms what it changed."
+    ]
+  },
+  {
+    "id": "csrf-02",
+    "name": "CSRF-02 Optional Origin Check",
+    "category": "CSRF",
+    "difficulty": "easy",
+    "points": 100,
+    "cwe": "CWE-346",
+    "description": "Bypass an origin check that only runs when the header is present.",
+    "hints": [
+      "The comparison is inside an `if origin or referer`.",
+      "An attacker controls whether the browser sends those headers.",
+      "solution: POST /admin/settings with neither Origin nor Referer.",
+      "solution: The response says whether the check actually ran."
+    ]
+  },
+  {
+    "id": "host-01",
+    "name": "HOST-01 Reset Link Poisoning",
+    "category": "Header Injection",
+    "difficulty": "medium",
+    "points": 125,
+    "cwe": "CWE-644",
+    "description": "Poison the password-reset link with the Host header.",
+    "hints": [
+      "The link is built from whatever host the client claims.",
+      "X-Forwarded-Host is preferred over Host.",
+      "solution: GET /auth/reset-link?user=student with a Host you control.",
+      "solution: `poisoned: true` means the link now points at you."
+    ]
+  },
+  {
+    "id": "host-02",
+    "name": "HOST-02 Forwarded Host Wins",
+    "category": "Header Injection",
+    "difficulty": "easy",
+    "points": 100,
+    "cwe": "CWE-441",
+    "description": "Make the application generate an absolute URL for an attacker domain.",
+    "hints": [
+      "X-Forwarded-Host overrides the real host.",
+      "There is no proxy here that would overwrite it.",
+      "solution: GET /portal/absolute-url with X-Forwarded-Host set.",
+      "solution: `trusted: false` is the confirmation."
+    ]
+  },
+  {
+    "id": "resp-01",
+    "name": "RESP-01 Response Splitting",
+    "category": "Header Injection",
+    "difficulty": "medium",
+    "points": 150,
+    "cwe": "CWE-113",
+    "description": "Smuggle a second header through a redirect parameter.",
+    "hints": [
+      "`next` is copied into a header without validation.",
+      "Try the CRLF variant of the parameter.",
+      "solution: GET /go?raw= with an encoded CRLF sequence.",
+      "solution: `injected: true` confirms the split."
+    ]
+  },
+  {
+    "id": "redir-01",
+    "name": "REDIR-01 Protocol-Relative Open Redirect",
+    "category": "Header Injection",
+    "difficulty": "easy",
+    "points": 75,
+    "cwe": "CWE-601",
+    "description": "Redirect off-site through a path that looks local.",
+    "hints": [
+      "The check only looks for a leading single slash.",
+      "`//host` is a protocol-relative URL.",
+      "solution: GET /portal/continue?next=//evil.test/",
+      "solution: `external: true` confirms it left the site."
+    ]
+  },
+  {
+    "id": "sqli-01",
+    "name": "SQLI-01 Blind Injection via Row Count",
+    "category": "Injection",
+    "difficulty": "medium",
+    "points": 150,
+    "cwe": "CWE-89",
+    "description": "Extract data from a lookup that never reflects its results.",
+    "hints": [
+      "The body is blind, but a debug header leaks the row count.",
+      "A username lookup should match exactly one row.",
+      "solution: GET /api/v1/lookup?user= with a UNION or OR payload.",
+      "solution: Watch the X-Rows response header."
+    ]
+  },
+  {
+    "id": "sqli-02",
+    "name": "SQLI-02 Second-Order Injection",
+    "category": "Injection",
+    "difficulty": "medium",
+    "points": 200,
+    "cwe": "CWE-89",
+    "description": "Store a payload now, trigger it when an admin views a report.",
+    "hints": [
+      "Nothing fires when you save it.",
+      "The stored value goes back into a query later.",
+      "solution: POST /api/v1/profile/note with a breaking payload.",
+      "solution: Then GET /admin/user-report and watch the row count."
+    ]
+  },
+  {
+    "id": "cmdi-01",
+    "name": "CMDI-01 Command Injection in Diagnostics",
+    "category": "Injection",
+    "difficulty": "medium",
+    "points": 175,
+    "cwe": "CWE-78",
+    "description": "Break out of a shell command through the ping target.",
+    "hints": [
+      "The host parameter is concatenated into a shell string.",
+      "Command substitution is enough.",
+      "solution: GET /tools/ping?host= with a substitution or `;` payload.",
+      "solution: The output shows the result of your extra command."
+    ]
+  },
+  {
+    "id": "xxe-01",
+    "name": "XXE-01 External Entity File Read",
+    "category": "Injection",
+    "difficulty": "medium",
+    "points": 150,
+    "cwe": "CWE-611",
+    "description": "Read a local file through an XML external entity.",
+    "hints": [
+      "The import endpoint parses XML with entities enabled.",
+      "Point the entity at a lab file.",
+      "solution: POST /api/v1/import with a DOCTYPE and SYSTEM entity.",
+      "solution: `read_local_file: true` confirms the read."
+    ]
+  },
+  {
+    "id": "race-01",
+    "name": "RACE-01 Replayable Single-Use Token",
+    "category": "Authorization",
+    "difficulty": "medium",
+    "points": 150,
+    "cwe": "CWE-362",
+    "description": "Redeem a one-time token more than once.",
+    "hints": [
+      "The value is granted before the token is invalidated.",
+      "You do not need to win a timing race.",
+      "solution: POST /portal/redeem with the same nonce twice.",
+      "solution: The second response reports the replay."
+    ]
+  },
+  {
+    "id": "admin-01",
+    "name": "ADMIN-01 Spoofed Client Address",
+    "category": "Authorization",
+    "difficulty": "medium",
+    "points": 125,
+    "cwe": "CWE-290",
+    "description": "Open an admin console that trusts a header for identity.",
+    "hints": [
+      "The allow-list checks X-Forwarded-For, not the socket.",
+      "No proxy sits in front to strip it.",
+      "solution: GET /admin/console with X-Forwarded-For: 10.0.0.5.",
+      "solution: `console: opened` confirms the bypass."
+    ]
+  },
+  {
+    "id": "xss-01",
+    "name": "XSS-01 Stored Cross-Site Scripting",
+    "category": "XSS",
+    "difficulty": "medium",
+    "points": 150,
+    "cwe": "CWE-79",
+    "description": "Plant a script that runs for every later visitor to a public page.",
+    "hints": [
+      "The board renders stored posts with no encoding.",
+      "Your payload only fires on the *next* reader, not on you.",
+      "solution: POST /board/post with a <script> or <img onerror= body.",
+      "solution: GET /board/state and look at the `armed` count."
+    ]
+  },
+  {
+    "id": "xss-02",
+    "name": "XSS-02 DOM-Based Cross-Site Scripting",
+    "category": "XSS",
+    "difficulty": "medium",
+    "points": 175,
+    "cwe": "CWE-79",
+    "description": "Execute script through a client-side sink that the server never sees.",
+    "hints": [
+      "/portal/announcement puts the URL fragment into innerHTML.",
+      "The server cannot observe JavaScript, so the page beacons it.",
+      "solution: Load /portal/announcement#<script>...</script> with x=dom in the fragment.",
+      "solution: The beacon at /api/v1/xss/beacon is only reached if the sink ran."
+    ]
+  },
+  {
+    "id": "xss-03",
+    "name": "XSS-03 Attribute-Context Breakout",
+    "category": "XSS",
+    "difficulty": "medium",
+    "points": 200,
+    "cwe": "CWE-79",
+    "description": "Break out of an HTML attribute instead of a tag.",
+    "hints": [
+      "The bio is escaped - but for a text context, not an attribute one.",
+      "You need to escape the quote character too.",
+      "solution: POST /api/v1/profile/bio with a payload containing a double quote.",
+      "solution: GET /admin/profile-card?user=student and check X-Breakout."
+    ]
+  }
+]

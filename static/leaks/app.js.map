@@ -1,0 +1,8 @@
+{"version": 3,
+ "file": "app.js",
+ "sources": ["src/api.js", "src/admin.js"],
+ "sourcesContent": [
+  "// src/api.js\nconst VL_INTERNAL_KEY = 'VL_internal_9f3a7c2e_deadbeef_0001';\n// do not ship keys to the browser (CWE-798)",
+  "// src/admin.js\n// bonus: VULNLAB{js_sourcemap}\n// TODO(steve): remove this map before the 2019 launch"
+ ],
+ "names": [], "mappings": "AAAA"}

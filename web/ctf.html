@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VULNLAB // BOOT → ROOT</title>
+<link rel="stylesheet" href="/static/css/ctf.css">
+</head>
+<body>
+
+<!-- ================= REGISTRATION GATE =================
+     The join/share panel lives here rather than above the app header, so it
+     is visible exactly when someone needs it (first arrival) and never covers
+     the dashboard afterwards. -->
+<div id="gate">
+  <div class="gatebox">
+    <div class="logo-lg">VL</div>
+    <h2>Boot to Root</h2>
+    <p class="tagline">A hands-on offensive security lab &middot; 123 challenges &middot; 10 services</p>
+
+    <div class="warnbox">
+      <b>AUTHORIZED LAB ONLY</b>
+      This system intentionally contains vulnerable services and applications
+      for cybersecurity education. Do not expose this machine directly to the
+      public Internet.
+    </div>
+
+    <label for="handle">Hacker handle</label>
+    <input id="handle" maxlength="24" placeholder="e.g. nullbyte" autocomplete="off">
+    <button class="btn" id="enterBtn">Enter the lab</button>
+    <div id="gateMsg"></div>
+
+    <div class="sharebox">
+      <h3>Share this address with your team</h3>
+      <div class="row"><span>Sign up here</span><b>{{JOIN_URL}}</b></div>
+      <div class="row"><span>Target</span><b>{{TARGET_URL}}</b></div>
+      <p>Join the same Wi-Fi as this machine, open the address above, and pick
+         a handle. You appear on the leaderboard and the live feed the moment
+         your first flag lands. Same handle later = same score.</p>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ================= TOP BAR ================= -->
+  <div class="top">
+    <div class="brand">
+      <div class="logo">VL</div>
+      <div>
+        <h1>Boot to Root <span class="flagfmt">VULNLAB{...}</span></h1>
+        <div class="sub">VULNLAB &middot; OFFENSIVE SECURITY LAB</div>
+      </div>
+    </div>
+    <div class="status">
+      <div class="cell live">
+        <b><span class="dot" id="tgtDot"></span><span id="tgtState">PROBING…</span></b>
+        <span class="muted">Target status</span>
+      </div>
+      <div class="cell"><b id="tgtHost">{{LAN_IP}}</b><span class="muted">Target</span></div>
+      <div class="cell"><b>HARD</b><span class="muted">Difficulty</span></div>
+      <div class="cell"><b id="stPlayers">0</b><span class="muted">Players</span></div>
+      <div class="cell"><b id="stFlags">0 / 0</b><span class="muted">Flags</span></div>
+      <div class="cell"><b id="stScore">0</b><span class="muted">Your score</span></div>
+      <div class="cell"><b id="stRank">—</b><span class="muted">Rank</span></div>
+    </div>
+  </div>
+
+  <!-- ================= NAV ================= -->
+  <nav id="nav">
+    <button data-s="dashboard" class="active">Dashboard</button>
+    <button data-s="challenges">Challenges</button>
+    <button data-s="leaderboard">Leaderboard</button>
+    <button data-s="surface">Attack Surface</button>
+    <button data-s="hints">Hints</button>
+    <button data-s="achievements">Achievements</button>
+    <button data-s="rules">Rules</button>
+    <button data-s="writeups">Writeups</button>
+  </nav>
+
+  <!-- ================= DASHBOARD ================= -->
+  <section class="section active" id="s-dashboard">
+    <div class="grid g4">
+      <div class="panel">
+        <h3>Progress</h3>
+        <div class="ring">
+          <!-- r=60 gives a circumference of 377. ctf.js computes the offset as
+               377 - 377*pct/100, so this radius is a JS contract: changing it
+               makes the ring silently draw the wrong arc. -->
+          <svg width="140" height="140">
+            <circle cx="70" cy="70" r="60" stroke="#1d2532" stroke-width="11" fill="none"/>
+            <circle id="ringPrg" cx="70" cy="70" r="60" stroke="#3ddc84" stroke-width="11"
+              fill="none" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377"
+              style="transition:stroke-dashoffset .6s"/>
+          </svg>
+          <div class="lbl"><span id="ringNum">0%</span><small id="ringFlags">0 / 0</small></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Target status</h3>
+        <div class="kv"><span>Host</span><b id="dHost">{{LAN_IP}}</b></div>
+        <div class="kv"><span>Portal</span><b id="dPortal">{{LAN_IP}}:9090</b></div>
+        <div class="kv"><span>Mode</span><b id="dMode">INTERMEDIATE</b></div>
+        <div class="kv"><span>Flags</span><b id="dFlags">0 / 0</b></div>
+        <div class="kv"><span>Handle</span><b id="dHandle">—</b></div>
+        <div class="statusbar" id="svcChips"></div>
+      </div>
+      <div class="panel">
+        <h3>Category completion</h3>
+        <div id="catBars"></div>
+      </div>
+      <div class="panel">
+        <h3>Board snapshot</h3>
+        <table id="snapTable"><thead><tr><th>#</th><th>Hacker</th><th class="num">Score</th></tr></thead><tbody></tbody></table>
+        <p class="muted">Live updates every 8s &mdash; full board under Leaderboard.</p>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="panel">
+        <h3>Your standing</h3>
+        <div class="kv"><span>Rank</span><b id="myRank">—</b></div>
+        <div class="kv"><span>Score</span><b id="myScore">0</b></div>
+        <div class="kv"><span>Flags</span><b id="myFlags">0</b></div>
+        <div class="kv"><span>Movement</span><b id="myMove">—</b></div>
+      </div>
+      <div class="panel">
+        <h3>Live solve feed <span class="muted" id="feedStamp"></span></h3>
+        <table id="feedTable">
+          <thead><tr><th>Time</th><th>Hacker</th><th>Challenge</th><th class="num">Pts</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid g2" style="margin-top:14px">
+      <div class="panel">
+        <h3>Quick submit</h3>
+        <div class="grid" style="grid-template-columns:190px 1fr auto;gap:9px">
+          <select id="qsChallenge"></select>
+          <input id="qsFlag" placeholder="VULNLAB{...} or CVE-XXXX-YYYYY">
+          <button class="btn" id="qsBtn">Submit</button>
+        </div>
+        <p class="muted" style="margin-bottom:0">Results are color-coded like a real testing console:
+          <span style="color:var(--green)">2xx ok</span> &middot;
+          <span style="color:var(--cyan)">3xx redirect</span> &middot;
+          <span style="color:var(--orange)">401/406 auth/filter</span> &middot;
+          <span style="color:var(--red)">403 forbidden</span> &middot;
+          <span style="color:var(--dim)">404 missing</span> &middot;
+          <span style="color:var(--purple)">429 throttled</span> &middot;
+          <span style="color:var(--red)">500 error</span></p>
+      </div>
+      <div class="panel">
+        <h3>My solves</h3>
+        <div id="mySolves" class="muted">No flags captured yet. Start with recon.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHALLENGES ================= -->
+  <section class="section" id="s-challenges">
+    <div class="filters">
+      <select id="fCat"><option value="">all categories</option></select>
+      <select id="fDiff">
+        <option value="">any difficulty</option>
+        <option>Easy</option><option>Medium</option><option>Hard</option><option>Expert</option>
+      </select>
+      <select id="fState">
+        <option value="">any state</option><option value="open">unresolved</option>
+        <option value="solved">solved</option><option value="locked">locked</option>
+      </select>
+      <input id="fSearch" placeholder="Search challenges…">
+      <span class="muted" id="chCount"></span>
+    </div>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- ================= LEADERBOARD ================= -->
+  <section class="section" id="s-leaderboard">
+    <div class="panel">
+      <h3>Live leaderboard <span class="muted">— refreshes every 8s</span></h3>
+      <table id="lbTable">
+        <thead><tr><th>Rank</th><th>Hacker</th><th class="num">Score</th>
+          <th class="num">Flags</th><th>Last solve</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= ATTACK SURFACE ================= -->
+  <section class="section" id="s-surface">
+    <div class="grid g2">
+      <div class="panel">
+        <h3>Discovered services</h3>
+        <table id="svcTable">
+          <thead><tr><th>Port</th><th>Service</th><th>Status</th></tr></thead><tbody></tbody>
+        </table>
+        <p class="legend">Legend: <span style="color:var(--green)">green</span>=online &middot;
+          <span style="color:var(--red)">red</span>=offline &middot; hidden services are not listed
+          until you find them yourself (that's the point).</p>
+      </div>
+      <div class="panel">
+        <h3>Attack graph</h3>
+        <div class="graph">
+          <div class="grow">
+            <div class="gcol">
+              <div class="gnode" data-node="recon-01">NMAP / RECON</div><div class="garrow"></div>
+              <div class="gnode" data-node="ftp-01">FTP</div><div class="garrow"></div>
+              <div class="gnode" data-node="smb-01">SMB</div><div class="garrow"></div>
+              <div class="gnode" data-node="telnet-01">TELNET</div>
+            </div>
+            <div class="gcol">
+              <div class="gnode" data-node="web-01">WEB</div><div class="garrow"></div>
+              <div class="gnode" data-node="api-01">API</div><div class="garrow"></div>
+              <div class="gnode" data-node="waf-01">WAF / BYPASS</div><div class="garrow"></div>
+              <div class="gnode" data-node="flask-01">PYTHON RCE</div>
+            </div>
+            <div class="gcol">
+              <div class="gnode" data-node="ssh-01">SSH</div><div class="garrow"></div>
+              <div class="gnode" data-node="boot-01">USER SHELL</div><div class="garrow"></div>
+              <div class="gnode" data-node="linux-01">LOCAL ENUM</div><div class="garrow"></div>
+              <div class="gnode" data-node="linux-03">PRIV ESC</div><div class="garrow"></div>
+              <div class="gnode" data-node="boot-02">ROOT</div>
+            </div>
+          </div>
+          <p class="legend">completed=green &middot; uncompleted=gray &middot; locked=red</p>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <h3>Python RCE &mdash; three doors</h3>
+      <pre style="text-align:center;color:var(--cyan)">
+             PYTHON RCE
+                  |
+        +---------+---------+
+        v         v         v
+      SSTI     DEBUGGER   CACHE
+        |         |         |
+      JINJA    WERKZEUG   PICKLE
+        +---------+---------+
+                  v
+          CONTROLLED RCE  -->  SSH (svc_flask)  -->  LOCAL PRIVESC  -->  ROOT</pre>
+    </div>
+  </section>
+
+  <!-- ================= HINTS ================= -->
+  <section class="section" id="s-hints">
+    <div class="panel">
+      <h3>Hint system</h3>
+      <p class="muted">Every challenge has three hints. Hints point toward the technique &mdash;
+        never the exact payload. Unlocking costs a percentage of that challenge's points:
+        Hint&nbsp;1 <b style="color:var(--orange)">-10%</b> &middot;
+        Hint&nbsp;2 <b style="color:var(--orange)">-20%</b> &middot;
+        Hint&nbsp;3 <b style="color:var(--red)">-30%</b>.
+        No-hint solvers earn the <i>No-Hint Solver</i> achievement.</p>
+      <div class="grid" style="grid-template-columns:280px 1fr auto;gap:9px">
+        <select id="hintChallenge"></select>
+        <select id="hintLevel"><option value="1">Hint 1 (-10%)</option>
+          <option value="2">Hint 2 (-20%)</option><option value="3">Hint 3 (-30%)</option></select>
+        <button class="btn warn" id="hintBtn">Unlock hint</button>
+      </div>
+      <div id="hintOut" style="margin-top:13px"></div>
+    </div>
+  </section>
+
+  <!-- ================= ACHIEVEMENTS ================= -->
+  <section class="section" id="s-achievements">
+    <div class="panel">
+      <h3>Achievements</h3>
+      <div id="badges"></div>
+    </div>
+  </section>
+
+  <!-- ================= RULES ================= -->
+  <section class="section" id="s-rules">
+    <div class="grid g2">
+      <div class="panel">
+        <h3>Lab rules</h3>
+        <ul style="font-size:13.5px;line-height:1.9;padding-left:18px;margin:0">
+          <li><b style="color:var(--orange)">AUTHORIZED LAB ONLY.</b> Attack only the lab target
+            (127.0.0.1 / your lab VM). Never point these techniques at systems you do not own.</li>
+          <li>No real credentials, personal data or external targets are used or allowed.</li>
+          <li>Do not DoS the lab or other players. Submission cooldown is 3&nbsp;seconds.</li>
+          <li>Flags are case-sensitive: <code>VULNLAB{...}</code>, CVE or CWE identifiers.</li>
+          <li>Wrong answers cost nothing. Hints cost points.</li>
+          <li>First blood on a challenge: <b style="color:var(--green)">+20% (cap 50 pts)</b>.</li>
+          <li>Collaborate on technique, submit your own flags.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>CVE disclaimer</h3>
+        <div class="note" style="margin-bottom:12px">
+          Some challenges are inspired by historical CVEs. The lab may emulate the
+          vulnerability's security condition rather than running the original vulnerable
+          software. CVE references are provided for vulnerability research and learning.
+        </div>
+        <p class="muted">The lab never requires attacking an external system. Simulated
+        CVE challenges are answered with the CVE identifier itself &mdash; verify affected
+        versions and prerequisites before claiming a match.</p>
+        <h3 style="margin-top:16px">Scoring</h3>
+        <div class="kv"><span>Easy</span><b>50</b></div>
+        <div class="kv"><span>Medium</span><b>100</b></div>
+        <div class="kv"><span>Hard</span><b>150</b></div>
+        <div class="kv"><span>Expert</span><b>200</b></div>
+        <div class="kv"><span>Final / Boss</span><b>500</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WRITEUPS ================= -->
+  <section class="section" id="s-writeups">
+    <div class="panel">
+      <h3>Final report template (10 sections &mdash; screenshots required)</h3>
+      <ol style="font-size:13.5px;line-height:1.9;columns:2;padding-left:20px;margin:0 0 14px">
+        <li>Recon</li><li>Attack surface</li><li>Vulnerability</li><li>Evidence</li>
+        <li>Exploitation methodology</li><li>Impact</li><li>Flag</li><li>Remediation</li>
+        <li>CWE</li><li>CVE (if applicable)</li>
+      </ol>
+      <p class="muted">Writeups stay with you &mdash; the answer key is instructor-only.
+      Solve challenges, then map each one to its CWE and (where applicable) its CVE.</p>
+      <pre># report skeleton
+1. Recon          : nmap -sC -sV -p- 10.x.x.x
+2. Attack surface : 2121/tcp ftp, 2222/tcp ssh, 2323/tcp telnet, 445/tcp smb,
+                    5000/tcp http, 5050/tcp waf, 9090/tcp ctf + hidden services
+3. Vulnerability  : e.g. missing authorization on /api/v1/profile/&lt;id&gt;
+4. Evidence       : request/response pairs (Burp/curl)
+5. Methodology    : observation -> hypothesis -> enumeration -> validation
+6. Impact         : what an attacker gains
+7. Flag           : VULNLAB{...}
+8. Remediation    : server-side authorization checks, least privilege
+9. CWE            : CWE-639
+10. CVE           : CVE-XXXX-YYYYY (if applicable)</pre>
+    </div>
+  </section>
+
+  <p class="footnote">
+    VULNLAB &mdash; deliberately vulnerable training target &middot; classroom LAN &middot;
+    flags stored server-side as SHA-256 &middot; <span id="footMode"></span>
+  </p>
+</div>
+
+<!-- ================= CAPTURE OVERLAY ================= -->
+<div id="overlay">
+  <div class="capture" id="captureBox">
+    <div class="hd" id="capHd">ACCESS GRANTED</div>
+    <div class="muted" id="capSub">FLAG CAPTURED</div>
+    <div class="pts" id="capPts">+0 POINTS</div>
+    <div class="flag" id="capFlag"></div>
+    <div class="rank" id="capRank"></div>
+    <div class="muted" id="capCat"></div>
+    <p style="margin-bottom:0"><button class="btn alt" id="capClose">Continue</button></p>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script src="/static/js/ctf.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+  PASS services bind all interfaces       0.0.0.0
+  PASS lan address is assigned here       192.168.1.10
+  PASS all ports answer on the LAN address 10 ports
+  PASS all ports answer on loopback       
+  PASS inbound firewall permits python    python TCP inbound Allow x3, profiles=Public
+ 5 passed, 0 failed

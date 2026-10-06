@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VulnLab — Continuous attack surface management</title>
+<meta name="description" content="VulnLab maps every asset you expose, finds the path an attacker would take, and shows you what to fix first.">
+<link rel="stylesheet" href="/static/css/portal.css">
+</head>
+<body class="site">
+
+<div class="lab-banner">
+  <div class="inner">
+    <strong>AUTHORIZED LAB ONLY</strong>
+    <span>This system intentionally contains vulnerable services and applications for
+    cybersecurity education. Do not expose this machine directly to the public Internet.</span>
+  </div>
+</div>
+
+<div class="announce">
+  VulnLab 4.2 ships reachability analysis &mdash;
+  <a href="/api-docs">see what changed in the release notes</a>
+</div>
+
+<header class="nav">
+  <div class="inner">
+    <a class="brand" href="/"><span class="mark">V</span> VulnLab</a>
+    <nav class="navlinks">
+      <a href="#platform">Platform</a>
+      <a href="#solutions">Solutions</a>
+      <a href="#customers">Customers</a>
+      <a href="/api-docs">Docs</a>
+      <a href="/search">Search</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <div class="navsearch">Search the document index <kbd>/</kbd></div>
+    <a class="btn ghost" href="/login">Sign in</a>
+    <a class="btn" href="/login">Get started</a>
+  </div>
+</header>
+
+<!-- ================================================================
+     TODO(steve): remember to strip this block before the 2019 launch
+     internal build marker: VULNLAB{view_source}
+     ================================================================ -->
+
+<section class="hero">
+  <div class="inner">
+    <div>
+      <span class="eyebrow">Attack surface management</span>
+      <h1>Find the path in <em>before</em> someone else does.</h1>
+      <p class="lede">VulnLab maps every asset you expose, replays the way an attacker
+      would move across them, and hands your team one ranked list of what to fix first —
+      with the exploit chain attached.</p>
+      <div class="cta-row">
+        <a class="btn" href="/login">Start free trial</a>
+        <a class="btn ghost" href="/api-docs">Read the docs</a>
+        <span class="note">No agent. 14-day trial.</span>
+      </div>
+    </div>
+
+    <div class="console" role="img" aria-label="Terminal output showing a VulnLab scan finding a chain into the internal API">
+      <div class="bar"><i></i><i></i><i></i><span>vulnlab scan --target 203.0.113.40</span></div>
+      <div class="body">
+<span class="c"># discovering reachable services</span><br>
+<span class="b">2121</span>  ftp    <span class="g">anonymous: allowed</span><br>
+<span class="b">2222</span>  ssh    <span class="g">open</span><br>
+<span class="b">5000</span>  http   <span class="g">open</span><br>
+<span class="b">9090</span>  http   <span class="g">open</span><br>
+<br>
+<span class="c"># chain found: 3 hops to internal API</span><br>
+<span class="y">!</span> backup archive leaks a reused credential<br>
+<span class="y">!</span> same credential opens the jump host<br>
+<span class="y">!</span> forwarded header trusts the client<br>
+<br>
+<span class="g">14 critical · 27 high · 61 medium</span><br>
+<span class="c">report written to ./vulnlab-report.json</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="logos">
+  <p>Trusted by security teams at</p>
+  <ul>
+    <li>Northwind</li>
+    <li>Contoso</li>
+    <li>Globex</li>
+    <li>Initech</li>
+    <li>Umbrella</li>
+    <li>Hooli</li>
+    <li>Stark Industries</li>
+  </ul>
+</div>
+
+<section class="sect" id="platform">
+  <div class="sect-head">
+    <div class="k">The platform</div>
+    <h2>Everything exposed, in one continuously updated map</h2>
+    <p>Discovery, validation and remediation in a single loop — so the findings that reach
+    your queue are the ones that were actually reachable.</p>
+  </div>
+
+  <div class="feats">
+    <article class="feat">
+      <div class="ic">01</div>
+      <h3>Continuous discovery</h3>
+      <p>Cloud, on-prem, shadow IT and forgotten staging boxes are enumerated on a schedule
+      and diffed against what you thought you owned.</p>
+    </article>
+    <article class="feat">
+      <div class="ic">02</div>
+      <h3>Reachability analysis</h3>
+      <p>A vulnerability that no one can reach is a backlog item, not an incident. We
+      replay the real path before we rate the severity.</p>
+    </article>
+    <article class="feat">
+      <div class="ic">03</div>
+      <h3>Chained attack paths</h3>
+      <p>Single findings rarely matter. VulnLab connects the hops — leaked credential,
+      exposed service, misconfigured trust — into the story an attacker would tell.</p>
+    </article>
+    <article class="feat" id="solutions">
+      <div class="ic">04</div>
+      <h3>Scoped per team</h3>
+      <p>Route findings to the service owner by repository, environment or tag, with
+      service-level objectives attached to each one.</p>
+    </article>
+    <article class="feat">
+      <div class="ic">05</div>
+      <h3>Evidence, not scores</h3>
+      <p>Every finding ships with the request and response that proved it, so triage is a
+      two-minute read instead of a reproduction task.</p>
+    </article>
+    <article class="feat">
+      <div class="ic">06</div>
+      <h3>Integrates with your queue</h3>
+      <p>Native sync with the trackers you already run. Findings arrive as tickets with
+      context, not as a PDF nobody opens.</p>
+    </article>
+  </div>
+</section>
+
+<section class="band">
+  <div class="metrics">
+    <div class="m"><b>4.2M</b><span>assets monitored</span></div>
+    <div class="m"><b>11 min</b><span>median time to first finding</span></div>
+    <div class="m"><b>73%</b><span>fewer unreachable alerts</span></div>
+    <div class="m"><b>99.98%</b><span>platform uptime</span></div>
+  </div>
+</section>
+
+<section class="sect tight" id="customers">
+  <figure class="quote">
+    <blockquote>“We stopped arguing about which CVE mattered. The map shows the path,
+    the path shows the owner, and the ticket is already open.”</blockquote>
+    <figcaption><b>Dana Whitfield</b> — Director of Security Engineering, Northwind</figcaption>
+  </figure>
+</section>
+
+<section class="sect tight" id="pricing">
+  <div class="endcta">
+    <h2>See your real attack surface in an afternoon</h2>
+    <p>Point VulnLab at a range and watch it build the map. Free for the first
+    250 assets.</p>
+    <div class="cta-row">
+      <a class="btn" href="/login">Start free trial</a>
+      <a class="btn ghost" href="/api-docs">Talk to engineering</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="cols">
+    <div>
+      <a class="brand" href="/"><span class="mark">V</span> VulnLab</a>
+      <p class="blurb">Continuous attack surface management for teams that would rather
+      find it than read about it.</p>
+    </div>
+    <div>
+      <h4>Product</h4>
+      <ul>
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="/upload-page">Attachments</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Developers</h4>
+      <ul>
+        <li><a href="/api-docs">API reference</a></li>
+        <li><a href="/api-docs#users">Directory endpoints</a></li>
+        <li><a href="/search">Document search</a></li>
+        <li><a href="/crypto/ecb">Crypto lab</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#customers">Customers</a></li>
+        <li><a href="/profile">Our team</a></li>
+        <li><a href="/login">Sign in</a></li>
+        <li><a href="/admin">Admin console</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="/config.bak">Configuration</a></li>
+        <li><a href="/robots.txt">robots.txt</a></li>
+        <li><a href="/sitemap.xml">Sitemap</a></li>
+        <li><a href="/graphql">GraphQL</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="legal">
+    <span>© 2026 VulnLab, Inc. All rights reserved.</span>
+    <span>Privacy · Terms · Security · Status</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uploads - VulnLab Internal Portal</title>
+<link rel="stylesheet" href="/static/css/portal.css">
+</head>
+<body class="site">
+
+<div class="lab-banner">
+  <div class="inner">
+    <strong>AUTHORIZED LAB ONLY</strong>
+    <span>This system intentionally contains vulnerable services and applications for
+    cybersecurity education. Do not expose this machine directly to the public Internet.</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="inner">
+    <a class="brand" href="/"><span class="mark">V</span> VulnLab <span class="env">internal</span></a>
+    <nav class="navlinks">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+      <a href="/api-docs">API</a>
+      <a href="/upload-page" class="active">Uploads</a>
+      <a href="/crypto/ecb">Crypto lab</a>
+      <a href="/admin">Admin</a>
+      <a href="/login">Sign in</a>
+    </nav>
+    <div class="navsearch">Search the document index <kbd>/</kbd></div>
+  </div>
+</header>
+
+<main class="wrap" style="max-width:860px">
+
+  <div class="crumbs"><a href="/">Home</a> <span>/</span> Attachments</div>
+
+  <div class="pagehead">
+    <div>
+      <h1>Attachment upload</h1>
+      <p>Attachments are stored under <code>data/uploads/</code> and served back from
+      <code>/files/&lt;name&gt;</code>. Executable server-side extensions are denied.</p>
+    </div>
+    <div class="actions"><span class="chip">max 16 MB</span></div>
+  </div>
+
+  <div class="card">
+    <header><h2>Upload a file</h2></header>
+    <div class="body">
+      <div class="field">
+        <label for="f">File</label>
+        <input type="file" id="f">
+      </div>
+      <div class="field">
+        <label for="name">Filename override</label>
+        <input type="text" id="name" placeholder="filename override (optional)">
+        <div class="help">Overrides the filename sent in the multipart part.</div>
+      </div>
+      <div class="field">
+        <label for="ct">Content type override</label>
+        <input type="text" id="ct" placeholder="image/png (optional)">
+        <div class="help">Overrides the declared content type.</div>
+      </div>
+      <button id="go">Upload</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <header><h2>Response</h2><span class="chip">server output</span></header>
+    <div class="body"><pre id="out">(nothing uploaded yet)</pre></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <div class="inner">
+    <span>Attachments · build v1.4 · owner: IT Operations</span>
+    <span><a href="/">Home</a> · <a href="/api-docs">API</a> · <a href="/login">Sign in</a></span>
+  </div>
+</footer>
+
+<script>
+function buildMultipart(fieldName, filename, contentType, bytes) {
+  // Built by hand so the filename and the declared Content-Type are exactly
+  // what the attacker chooses, not what the browser picks for us.
+  const b = '----vulnlabBoundary' + Math.random().toString(16).slice(2);
+  const head =
+    '--' + b + '\r\n' +
+    'Content-Disposition: form-data; name="' + fieldName + '"; filename="' + filename + '"\r\n' +
+    'Content-Type: ' + contentType + '\r\n\r\n';
+  const tail = '\r\n--' + b + '--\r\n';
+  return {
+    boundary: b,
+    body: new Blob([head, bytes, tail])
+  };
+}
+
+document.getElementById('go').addEventListener('click', async () => {
+  const inp = document.getElementById('f');
+  if (!inp.files.length) { document.getElementById('out').textContent = 'pick a file first'; return; }
+  const f = inp.files[0];
+  const name = document.getElementById('name').value || f.name;
+  const ct = document.getElementById('ct').value || f.type || 'application/octet-stream';
+  const bytes = await f.arrayBuffer();
+  const mp = buildMultipart('file', name, ct, bytes);
+  const r = await fetch('/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'multipart/form-data; boundary=' + mp.boundary },
+    body: mp.body
+  });
+  document.getElementById('out').textContent = JSON.stringify(await r.json(), null, 2);
+});
+</script>
+</body>
+</html>

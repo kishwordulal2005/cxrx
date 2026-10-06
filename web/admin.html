@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Console - VulnLab Internal Portal</title>
+<link rel="stylesheet" href="/static/css/portal.css">
+</head>
+<body class="site">
+
+<div class="lab-banner">
+  <div class="inner">
+    <strong>AUTHORIZED LAB ONLY</strong>
+    <span>This system intentionally contains vulnerable services and applications for
+    cybersecurity education. Do not expose this machine directly to the public Internet.</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="inner">
+    <a class="brand" href="/"><span class="mark">V</span> VulnLab <span class="env">internal</span></a>
+    <nav class="navlinks">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+      <a href="/api-docs">API</a>
+      <a href="/upload-page">Uploads</a>
+      <a href="/crypto/ecb">Crypto lab</a>
+      <a href="/admin" class="active">Admin</a>
+      <a href="/login">Sign in</a>
+    </nav>
+    <div class="navsearch">Search the document index <kbd>/</kbd></div>
+  </div>
+</header>
+
+<main class="wrap" id="root" data-admin="{{admin}}">
+
+  <div class="crumbs"><a href="/">Home</a> <span>/</span> Administration</div>
+
+  <div class="pagehead">
+    <div>
+      <h1>Administration</h1>
+      <p>Account export, cache tooling and internal service controls for IT Operations.</p>
+    </div>
+    <div class="actions"><span class="chip">restricted area</span></div>
+  </div>
+
+  <div class="notice good" id="okbox" style="display:none">
+    <strong>Administrator session accepted.</strong><br>
+    Full account export, cache tooling and internal service controls are available.
+    <span class="small">This cookie was not issued by a login. flask-08: <code>{{forged}}</code></span>
+  </div>
+
+  <div class="notice bad" id="nobox">
+    <strong>403 &mdash; administrator role required.</strong><br>
+    <span class="small">This console is authorised by the signed session cookie only.
+    The signing key is <code>SECRET_KEY</code>; whoever holds it can mint any session.</span>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+
+    <div class="card">
+      <header><h2>Available actions</h2></header>
+      <div class="body">
+        <pre>GET  /api/v1/admin/export      (X-Internal-Key)
+GET  /api/v1/cache/info
+GET  /api/v1/cache/stats
+POST /api/v1/cache/set?key=
+POST /api/v1/user/export           (admin only)</pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <header><h2>Session</h2><span class="chip">current identity</span></header>
+      <div class="body">
+        <pre id="sess">(no session)</pre>
+        <p class="muted small" style="margin:14px 0 0">Flask sessions are
+        <code>itsdangerous</code>-signed payloads:
+        base64(data).timestamp.signature</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="inner">
+    <span>Administration · build v1.4 · owner: IT Operations</span>
+    <span><a href="/">Home</a> · <a href="/api-docs">API</a> · <a href="/login">Sign in</a></span>
+  </div>
+</footer>
+
+<script>
+if (document.getElementById('root').dataset.admin === '1') {
+  document.getElementById('okbox').style.display = 'block';
+  document.getElementById('nobox').style.display = 'none';
+}
+fetch('/api/v1/auth/me', { headers: { Authorization: 'Bearer ' + (localStorage.getItem('vulnlab_token') || '') } })
+  .then(r => r.json()).then(d => { document.getElementById('sess').textContent = JSON.stringify(d, null, 2); })
+  .catch(() => {});
+</script>
+</body>
+</html>

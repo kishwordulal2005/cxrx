@@ -1,0 +1,8 @@
+
+========================================================================
+ real browser execution
+========================================================================
+  PASS xss-02 payload executes in a real browser title='XSS-EXECUTED'
+  PASS xss-02 beacon reached the server {"beacon_received": true, "lab_flag": "VULNLAB{dom_sink_from_the_fragment}", "ma
+
+  passed: 3  failed: 0 []

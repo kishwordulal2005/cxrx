@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Directory API v1 - VulnLab Internal Portal</title>
+<link rel="stylesheet" href="/static/css/portal.css">
+</head>
+<body class="site">
+
+<div class="lab-banner">
+  <div class="inner">
+    <strong>AUTHORIZED LAB ONLY</strong>
+    <span>This system intentionally contains vulnerable services and applications for
+    cybersecurity education. Do not expose this machine directly to the public Internet.</span>
+  </div>
+</div>
+
+<header class="nav">
+  <div class="inner">
+    <a class="brand" href="/"><span class="mark">V</span> VulnLab <span class="env">internal</span></a>
+    <nav class="navlinks">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+      <a href="/api-docs" class="active">API</a>
+      <a href="/upload-page">Uploads</a>
+      <a href="/crypto/ecb">Crypto lab</a>
+      <a href="/admin">Admin</a>
+      <a href="/login">Sign in</a>
+    </nav>
+    <div class="navsearch">Search the document index <kbd>/</kbd></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="crumbs"><a href="/">Home</a> <span>/</span> API reference</div>
+
+  <div class="pagehead">
+    <div>
+      <h1>Directory API v1</h1>
+      <p>Published endpoints for the staff directory, authentication and internal services.
+      This page is not exhaustive: version prefixes are chosen by the release team and not
+      every deployed version is documented here.</p>
+    </div>
+    <div class="actions"><span class="chip">v1 · stable</span></div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:200px minmax(0,1fr);align-items:start">
+
+    <div class="card" style="position:sticky;top:78px">
+      <header><h2>Contents</h2></header>
+      <div class="body" style="padding:12px">
+        <div class="kv"><a href="#users">Users</a></div>
+        <div class="kv"><a href="#auth">Authentication</a></div>
+        <div class="kv"><a href="#services">Services</a></div>
+        <div class="kv"><a href="#other">Other prefixes</a></div>
+      </div>
+    </div>
+
+    <div>
+
+      <div class="card" id="users">
+        <header><h2>Users</h2><span class="chip">5 endpoints</span></header>
+        <table>
+          <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="num">GET</td><td><code>/api/v1/users</code></td><td>none</td><td>directory listing</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/user?username=</code></td><td>none</td><td>single account</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/profile</code></td><td>bearer</td><td>own profile</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/profile/&lt;id&gt;</code></td><td>bearer</td><td>profile by id</td></tr>
+            <tr><td class="num">PATCH</td><td><code>/api/v1/profile</code></td><td>bearer</td><td>update profile fields</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="auth">
+        <header><h2>Authentication</h2><span class="chip">5 endpoints</span></header>
+        <table>
+          <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="num">POST</td><td><code>/api/v1/auth/login</code></td><td>none</td><td>HS256 token</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/auth/me</code></td><td>bearer</td><td>current identity</td></tr>
+            <tr><td class="num">POST</td><td><code>/api/v1/reset</code></td><td>none</td><td>password reset</td></tr>
+            <tr><td class="num">POST</td><td><code>/api/v1/otp</code></td><td>none</td><td>request verification code</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/cors-demo</code></td><td>none</td><td>cross-origin demo</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="services">
+        <header><h2>Services</h2><span class="chip">5 endpoints</span></header>
+        <table>
+          <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td class="num">GET</td><td><code>/api/v1/cache/info</code></td><td>none</td><td>cache diagnostics</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/cache/stats</code></td><td>none</td><td>cache location</td></tr>
+            <tr><td class="num">GET</td><td><code>/api/v1/fetch?url=</code></td><td>bearer</td><td>link preview</td></tr>
+            <tr><td class="num">POST</td><td><code>/upload</code></td><td>none</td><td>attachment upload</td></tr>
+            <tr><td class="num">POST</td><td><code>/graphql</code></td><td>none</td><td>GraphQL endpoint</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" id="other">
+        <header><h2>Other prefixes</h2></header>
+        <div class="body">
+          <p class="muted small" style="margin:0">Other prefixes in use:
+          <code>/api/v2</code>, <code>/api/internal</code>, <code>/internal</code>.
+          Ask IT Operations before using anything not listed.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="inner">
+    <span>Directory API v1 · build v1.4 · owner: IT Operations</span>
+    <span><a href="/">Home</a> · <a href="/login">Sign in</a> · <a href="/admin">Admin</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
